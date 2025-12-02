@@ -22,7 +22,7 @@ def author_details(author, current_user):
     else:
         name = author.username
 
-    # Wrap name in a safe mailto: link if email exists
+    # Wrap name in a safe mailto link if email exists
     if author.email:
         prefix = format_html('<a href="mailto:{}">', author.email)
         suffix = format_html("</a>")
@@ -31,3 +31,23 @@ def author_details(author, current_user):
         suffix = ""
 
     return format_html("{}{}{}", prefix, name, suffix)
+
+
+@register.inclusion_tag("blog/post-list.html")
+def recent_posts(post):
+    posts = Post.objects.exclude(pk=post.pk)[:5]
+    return {
+        "title": "Recent Posts",
+        "posts": posts,
+    }
+
+# tags
+
+@register.simple_tag
+def row(extra_classes=""):
+    return format_html('<div class="row {}">', extra_classes)
+
+
+@register.simple_tag
+def endrow():
+    return format_html("</div>")
